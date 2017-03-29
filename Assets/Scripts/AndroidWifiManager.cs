@@ -6,23 +6,27 @@ namespace UnityAndroidBridge
 {
     public static class AndroidWifiManager
     {
-        public static AndroidJavaObject GetWifiManager(AndroidJavaObject context)
+        public static AndroidJavaObject GetWifiManager()
         {
             using (AndroidJavaClass contextClass = new AndroidJavaClass("android.content.Context"))
             {
                 string wifiService = contextClass.GetStatic<string>("WIFI_SERVICE");
-                return context.Call<AndroidJavaObject>("getSystemService", wifiService);
+
+                using (AndroidJavaObject context = AndroidContext.GetApplicationContext())
+                {
+                    return context.Call<AndroidJavaObject>("getSystemService", wifiService);
+                }
             }
         }
 
-        public static AndroidJavaObject GetWifiInfo(AndroidJavaObject wifiManager)
+        public static AndroidJavaObject GetWifiInfo()
         {
-            return wifiManager.Call<AndroidJavaObject>("getConnectionInfo");
+            return GetWifiManager().Call<AndroidJavaObject>("getConnectionInfo");
         }
 
-        public static int GetRssi(AndroidJavaObject wifiInfo)
+        public static int GetRssi()
         {
-            return wifiInfo.Call<int>("getRssi");
+            return GetWifiInfo().Call<int>("getRssi");
         }
 
         //        rssi    int: The power of the signal measured in RSSI.

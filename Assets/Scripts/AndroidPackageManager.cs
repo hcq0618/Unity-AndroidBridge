@@ -5,21 +5,27 @@ namespace UnityAndroidBridge
 {
     public static class AndroidPackageManager
     {
-        public static AndroidJavaObject GetPackageManager(AndroidJavaObject context)
+        public static AndroidJavaObject GetPackageManager()
         {
-            return context.Call<AndroidJavaObject>("getPackageManager");
-        }
-
-        public static string GetPackageName(AndroidJavaObject context)
-        {
-            return context.Call<string>("getPackageName");
-        }
-
-        public static AndroidJavaObject GetApplicationInfo(AndroidJavaObject context, int flags)
-        {
-            using (AndroidJavaObject pm = GetPackageManager(context))
+            using (AndroidJavaObject context = AndroidContext.GetApplicationContext())
             {
-                return pm.Call<AndroidJavaObject>("getApplicationInfo", GetPackageName(context), flags);
+                return context.Call<AndroidJavaObject>("getPackageManager");
+            }
+        }
+
+        public static string GetPackageName()
+        {
+            using (AndroidJavaObject context = AndroidContext.GetApplicationContext())
+            {
+                return context.Call<string>("getPackageName");
+            }
+        }
+
+        public static AndroidJavaObject GetApplicationInfo(int flags)
+        {
+            using (AndroidJavaObject pm = GetPackageManager())
+            {
+                return pm.Call<AndroidJavaObject>("getApplicationInfo", GetPackageName(), flags);
             }
         }
 
@@ -36,9 +42,9 @@ namespace UnityAndroidBridge
             return GetPackageManagerFlags("GET_META_DATA");
         }
 
-        public static string GetMetaData(AndroidJavaObject context, string name)
+        public static string GetMetaData(string name)
         {
-            using (AndroidJavaObject appInfo = GetApplicationInfo(context, GetMetadataFlag()))
+            using (AndroidJavaObject appInfo = GetApplicationInfo(GetMetadataFlag()))
             {
                 using (AndroidJavaObject metaData = appInfo.Get<AndroidJavaObject>("metaData"))
                 {
@@ -48,9 +54,9 @@ namespace UnityAndroidBridge
         }
 
 
-        public static int GetMetaDataInt(AndroidJavaObject context, string name)
+        public static int GetMetaDataInt(string name)
         {
-            using (AndroidJavaObject appInfo = GetApplicationInfo(context, GetMetadataFlag()))
+            using (AndroidJavaObject appInfo = GetApplicationInfo(GetMetadataFlag()))
             {
                 using (AndroidJavaObject metaData = appInfo.Get<AndroidJavaObject>("metaData"))
                 {
@@ -59,14 +65,14 @@ namespace UnityAndroidBridge
             }
         }
 
-        public static bool GetMetaDataBoolean(AndroidJavaObject context, string name)
+        public static bool GetMetaDataBoolean(string name)
         {
-            return GetMetaDataBoolean(context, name, false);
+            return GetMetaDataBoolean(name, false);
         }
 
-        public static bool GetMetaDataBoolean(AndroidJavaObject context, string name, bool defaultValue)
+        public static bool GetMetaDataBoolean(string name, bool defaultValue)
         {
-            using (AndroidJavaObject appInfo = GetApplicationInfo(context, GetMetadataFlag()))
+            using (AndroidJavaObject appInfo = GetApplicationInfo(GetMetadataFlag()))
             {
                 using (AndroidJavaObject metaData = appInfo.Get<AndroidJavaObject>("metaData"))
                 {
@@ -75,35 +81,35 @@ namespace UnityAndroidBridge
             }
         }
 
-        public static AndroidJavaObject GetPackageInfo(AndroidJavaObject context)
+        public static AndroidJavaObject GetPackageInfo()
         {
-            using (AndroidJavaObject packageManager = GetPackageManager(context))
+            using (AndroidJavaObject packageManager = GetPackageManager())
             {
-                return packageManager.Call<AndroidJavaObject>("getPackageInfo", GetPackageName(context), 0);
+                return packageManager.Call<AndroidJavaObject>("getPackageInfo", GetPackageName(), 0);
             }
         }
 
-        public static string GetVersionName(AndroidJavaObject context)
+        public static string GetVersionName()
         {
-            using (AndroidJavaObject packageInfo = GetPackageInfo(context))
+            using (AndroidJavaObject packageInfo = GetPackageInfo())
             {
                 return packageInfo.Get<string>("versionName");
             }
         }
 
-        public static int GetVersionCode(AndroidJavaObject context)
+        public static int GetVersionCode()
         {
-            using (AndroidJavaObject packageInfo = GetPackageInfo(context))
+            using (AndroidJavaObject packageInfo = GetPackageInfo())
             {
                 return packageInfo.Get<int>("versionCode");
             }
         }
 
-        public static string GetAppName(AndroidJavaObject context)
+        public static string GetAppName()
         {
-            using (AndroidJavaObject packageManager = GetPackageManager(context))
+            using (AndroidJavaObject packageManager = GetPackageManager())
             {
-                using (AndroidJavaObject applicationInfo = GetApplicationInfo(context, 0))
+                using (AndroidJavaObject applicationInfo = GetApplicationInfo(0))
                 {
                     using (AndroidJavaObject label = packageManager.Call<AndroidJavaObject>("getApplicationLabel", applicationInfo))
                     {

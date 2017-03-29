@@ -109,12 +109,16 @@ namespace UnityAndroidBridge
             return "";
         }
 
-        public static AndroidJavaObject GetTelephonyManager(AndroidJavaObject context)
+        public static AndroidJavaObject GetTelephonyManager()
         {
             using (AndroidJavaClass contextClass = new AndroidJavaClass("android.content.Context"))
             {
                 string connectivityServiceName = contextClass.GetStatic<string>("TELEPHONY_SERVICE");
-                return context.Call<AndroidJavaObject>("getSystemService", connectivityServiceName);
+
+                using (AndroidJavaObject context = AndroidContext.GetApplicationContext())
+                {
+                    return context.Call<AndroidJavaObject>("getSystemService", connectivityServiceName);
+                }
             }
         }
 
@@ -146,9 +150,9 @@ namespace UnityAndroidBridge
             }
         }
 
-        public static string GetSDCardAvaliable(AndroidJavaObject context)
+        public static string GetSDCardAvaliable()
         {
-            return FormatFileSize(context, GetSDCardAvaliableBytes());
+            return FormatFileSize(GetSDCardAvaliableBytes());
         }
 
         //获取sd卡总大小
@@ -173,29 +177,21 @@ namespace UnityAndroidBridge
             }
         }
 
-        public static string GetSDCardTotal(AndroidJavaObject context)
+        public static string GetSDCardTotal()
         {
-            return FormatFileSize(context, GetSDCardTotalBytes());
+            return FormatFileSize(GetSDCardTotalBytes());
         }
 
         //获取sd卡缓存路径
         public static string GetExternalCacheDir()
         {
-            using (AndroidJavaObject activity = GetActivity())
+            using (AndroidJavaObject context = AndroidContext.GetApplicationContext())
             {
-                using (AndroidJavaObject cacheDir = activity.Call<AndroidJavaObject>("getExternalCacheDir"))
+                using (AndroidJavaObject cacheDir = context.Call<AndroidJavaObject>("getExternalCacheDir"))
                 {
                     string path = cacheDir.Call<string>("getPath");
                     return path;
                 }
-            }
-        }
-
-        static AndroidJavaObject GetActivity()
-        {
-            using (AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-            {
-                return unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
             }
         }
 
@@ -236,11 +232,14 @@ namespace UnityAndroidBridge
             }
         }
 
-        static string FormatFileSize(AndroidJavaObject context, long sizeBytes)
+        static string FormatFileSize(long sizeBytes)
         {
             using (AndroidJavaClass formatter = new AndroidJavaClass("android.text.format.Formatter"))
             {
-                return formatter.CallStatic<string>("formatFileSize", context, sizeBytes);
+                using (AndroidJavaObject context = AndroidContext.GetApplicationContext())
+                {
+                    return formatter.CallStatic<string>("formatFileSize", context, sizeBytes);
+                }
             }
         }
     }

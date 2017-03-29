@@ -7,12 +7,16 @@ namespace UnityAndroidBridge
     {
         #region sp
 
-        public static AndroidJavaObject GetSharedPreferences(AndroidJavaObject context, string path)
+        public static AndroidJavaObject GetSharedPreferences(string path)
         {
             using (AndroidJavaClass contextClass = new AndroidJavaClass("android.content.Context"))
             {
                 int contextModePrivate = contextClass.GetStatic<int>("MODE_PRIVATE");
-                return context.Call<AndroidJavaObject>("getSharedPreferences", path, contextModePrivate);
+
+                using (AndroidJavaObject context = AndroidContext.GetApplicationContext())
+                {
+                    return context.Call<AndroidJavaObject>("getSharedPreferences", path, contextModePrivate);
+                }
             }
         }
 
@@ -34,17 +38,17 @@ namespace UnityAndroidBridge
             }
         }
 
-        public static long GetLong(AndroidJavaObject context, string path, string key, long def)
+        public static long GetLong(string path, string key, long def)
         {
-            using (AndroidJavaObject sharedPreferences = GetSharedPreferences(context, path))
+            using (AndroidJavaObject sharedPreferences = GetSharedPreferences(path))
             {
                 return sharedPreferences.Call<long>("getLong", key, def);
             }
         }
 
-        public static long GetLong(AndroidJavaObject context, string path, string key)
+        public static long GetLong(string path, string key)
         {
-            return GetLong(context, path, key, 0);
+            return GetLong(path, key, 0);
         }
 
         public static AndroidJavaObject PutLong(AndroidJavaObject editor, string key, long value)
@@ -53,9 +57,9 @@ namespace UnityAndroidBridge
             return editor;
         }
 
-        public static void SaveLong(AndroidJavaObject context, string path, string key, long value)
+        public static void SaveLong(string path, string key, long value)
         {
-            using (AndroidJavaObject sharedPreferences = GetSharedPreferences(context, path))
+            using (AndroidJavaObject sharedPreferences = GetSharedPreferences(path))
             {
                 using (AndroidJavaObject editor = Edit(sharedPreferences))
                 {
@@ -67,17 +71,17 @@ namespace UnityAndroidBridge
             }
         }
 
-        public static bool GetBoolean(AndroidJavaObject context, string path, string key, bool def)
+        public static bool GetBoolean(string path, string key, bool def)
         {
-            using (AndroidJavaObject sharedPreferences = GetSharedPreferences(context, path))
+            using (AndroidJavaObject sharedPreferences = GetSharedPreferences(path))
             {
                 return sharedPreferences.Call<bool>("getBoolean", key, def);
             }
         }
 
-        public static bool GetBoolean(AndroidJavaObject context, string path, string key)
+        public static bool GetBoolean(string path, string key)
         {
-            return GetBoolean(context, path, key, false);
+            return GetBoolean(path, key, false);
         }
 
         public static AndroidJavaObject PutBoolean(AndroidJavaObject editor, string key, bool value)
@@ -86,9 +90,9 @@ namespace UnityAndroidBridge
             return editor;
         }
 
-        public static void SaveBoolean(AndroidJavaObject context, string path, string key, bool value)
+        public static void SaveBoolean(string path, string key, bool value)
         {
-            using (AndroidJavaObject sharedPreferences = GetSharedPreferences(context, path))
+            using (AndroidJavaObject sharedPreferences = GetSharedPreferences(path))
             {
                 using (AndroidJavaObject editor = Edit(sharedPreferences))
                 {

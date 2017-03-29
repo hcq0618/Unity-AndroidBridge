@@ -10,12 +10,16 @@ namespace UnityAndroidBridge
             return audioManager.GetStatic<int>("STREAM_MUSIC");
         }
 
-        public static AndroidJavaObject GetAudioManager(AndroidJavaObject context)
+        public static AndroidJavaObject GetAudioManager()
         {
             using (AndroidJavaClass contextClass = new AndroidJavaClass("android.content.Context"))
             {
                 string audioService = contextClass.GetStatic<string>("AUDIO_SERVICE");
-                return context.Call<AndroidJavaObject>("getSystemService", audioService);
+
+                using (AndroidJavaObject context = AndroidContext.GetApplicationContext())
+                {
+                    return context.Call<AndroidJavaObject>("getSystemService", audioService);
+                }
             }
         }
 

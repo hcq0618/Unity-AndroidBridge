@@ -15,75 +15,70 @@ namespace UnityAndroidBridge
             return new AndroidJavaClass("android.provider.Settings$Global");
         }
 
-        static AndroidJavaObject GetContentResolver(AndroidJavaObject context)
-        {
-            return context.Call<AndroidJavaObject>("getContentResolver");
-        }
-
         #region default
 
-        public static void PutInt(AndroidJavaObject context, string name, int value)
+        public static void PutInt(string name, int value)
         {
-            PutIntSystem(context, name, value);
+            PutIntSystem(name, value);
         }
 
-        public static int GetInt(AndroidJavaObject context, string name, int def)
+        public static int GetInt(string name, int def)
         {
-            return GetIntSystem(context, name, def);
+            return GetIntSystem(name, def);
         }
 
-        public static void PutString(AndroidJavaObject context, string name, string value)
+        public static void PutString(string name, string value)
         {
-            PutStringSystem(context, name, value);
+            PutStringSystem(name, value);
         }
 
-        public static string GetString(AndroidJavaObject context, string name)
+        public static string GetString(string name)
         {
-            return GetStringSystem(context, name);
+            return GetStringSystem(name);
         }
 
         #endregion
 
         #region system
 
-        public static bool PutStringSystem(AndroidJavaObject context, string key, string value)
+        public static bool PutStringSystem(string key, string value)
         {
             using (AndroidJavaClass systemSetting = GetSettingsSystemClass())
             {
-                using (AndroidJavaObject cr = GetContentResolver(context))
+                using (AndroidJavaObject cr = AndroidContext.GetContentResolver())
                 {
                     return systemSetting.CallStatic<bool>("putString", cr, key, value);
                 }
             }
         }
 
-        public static string GetStringSystem(AndroidJavaObject context, string key)
+        public static string GetStringSystem(string key)
         {
             using (AndroidJavaClass systemSetting = GetSettingsSystemClass())
             {
-                using (AndroidJavaObject cr = GetContentResolver(context))
+                using (AndroidJavaObject cr = AndroidContext.GetContentResolver())
                 {
                     return systemSetting.CallStatic<string>("getString", cr, key);
                 }
             }
         }
 
-        public static bool PutIntSystem(AndroidJavaObject context, string key, int value)
+        public static bool PutIntSystem(string key, int value)
         {
             using (AndroidJavaClass systemSetting = GetSettingsSystemClass())
             {
-                using (AndroidJavaObject cr = GetContentResolver(context))
+                using (AndroidJavaObject cr = AndroidContext.GetContentResolver())
                 {
                     return systemSetting.CallStatic<bool>("putInt", cr, key, value);
                 }
             }
         }
 
-        public static int GetIntSystem(AndroidJavaObject context, string key, int def)
+        public static int GetIntSystem(string key, int def)
         {
             using (AndroidJavaClass systemSetting = GetSettingsSystemClass())
             {
-                using (AndroidJavaObject cr = GetContentResolver(context))
+                using (AndroidJavaObject cr = AndroidContext.GetContentResolver())
                 {
                     return systemSetting.CallStatic<int>("getInt", cr, key, def);
                 }
@@ -94,44 +89,44 @@ namespace UnityAndroidBridge
 
         #region global
 
-        public static bool PutStringGlobal(AndroidJavaObject context, string key, string value)
+        public static bool PutStringGlobal(string key, string value)
         {
             using (AndroidJavaClass globalSetting = GetSettingsGobalClass())
             {
-                using (AndroidJavaObject cr = GetContentResolver(context))
+                using (AndroidJavaObject cr = AndroidContext.GetContentResolver())
                 {
                     return globalSetting.CallStatic<bool>("putString", cr, key, value);
                 }
             }
         }
 
-        public static string GetStringGlobal(AndroidJavaObject context, string key)
+        public static string GetStringGlobal(string key)
         {
             using (AndroidJavaClass globalSetting = GetSettingsGobalClass())
             {
-                using (AndroidJavaObject cr = GetContentResolver(context))
+                using (AndroidJavaObject cr = AndroidContext.GetContentResolver())
                 {
                     return globalSetting.CallStatic<string>("getString", cr, key);
                 }
             }
         }
 
-        public static bool PutIntGlobal(AndroidJavaObject context, string key, int value)
+        public static bool PutIntGlobal(string key, int value)
         {
             using (AndroidJavaClass globalSetting = GetSettingsGobalClass())
             {
-                using (AndroidJavaObject cr = GetContentResolver(context))
+                using (AndroidJavaObject cr = AndroidContext.GetContentResolver())
                 {
                     return globalSetting.CallStatic<bool>("putInt", cr, key, value);
                 }
             }
         }
 
-        public static int GetIntGlobal(AndroidJavaObject context, string key, int def)
+        public static int GetIntGlobal(string key, int def)
         {
             using (AndroidJavaClass globalSetting = GetSettingsGobalClass())
             {
-                using (AndroidJavaObject cr = GetContentResolver(context))
+                using (AndroidJavaObject cr = AndroidContext.GetContentResolver())
                 {
                     return globalSetting.CallStatic<int>("getInt", cr, key, def);
                 }

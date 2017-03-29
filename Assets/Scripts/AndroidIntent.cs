@@ -6,7 +6,6 @@ namespace UnityAndroidBridge
 {
     public class AndroidIntent : IDisposable
     {
-        readonly AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
         readonly AndroidJavaObject intent;
 
         public AndroidIntent()
@@ -16,7 +15,7 @@ namespace UnityAndroidBridge
 
         public AndroidIntent(string actionName)
         {
-            intent = new AndroidJavaObject("android.content.Intent", GetStaticStringField(actionName));
+            intent = new AndroidJavaObject("android.content.Intent", GetStringField(actionName));
         }
 
         public AndroidIntent SetAction(string action)
@@ -27,7 +26,7 @@ namespace UnityAndroidBridge
 
         public AndroidIntent AddCategory(string categoryName)
         {
-            intent.Call<AndroidJavaObject>("addCategory", GetStaticStringField(categoryName));
+            intent.Call<AndroidJavaObject>("addCategory", GetStringField(categoryName));
 
             return this;
         }
@@ -52,14 +51,25 @@ namespace UnityAndroidBridge
             return intent;
         }
 
-        public string GetStaticStringField(string fieldName)
+        static AndroidJavaClass GetIntentClass()
         {
-            return intentClass.GetStatic<string>(fieldName);
+            return new AndroidJavaClass("android.content.Intent");
         }
 
-        public int GetStaticIntField(string fieldName)
+        public static string GetStringField(string fieldName)
         {
-            return intentClass.GetStatic<int>(fieldName);
+            using (AndroidJavaClass intentClass = GetIntentClass())
+            {
+                return intentClass.GetStatic<string>(fieldName);
+            }
+        }
+
+        public static int GetIntField(string fieldName)
+        {
+            using (AndroidJavaClass intentClass = GetIntentClass())
+            {
+                return intentClass.GetStatic<int>(fieldName);
+            }
         }
 
         public AndroidIntent PutExtra(string name, bool value)
@@ -82,7 +92,6 @@ namespace UnityAndroidBridge
 
         public void Dispose()
         {
-            intentClass.Dispose();
             intent.Dispose();
         }
     }
